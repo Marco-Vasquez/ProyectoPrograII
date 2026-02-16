@@ -125,7 +125,7 @@ public class ProyectoFinalProgra2 {
         }
     }
     public static void iniciarJuego(){
-        while(juego.players.size()<2){
+        while(juego.getCantidadPlayers()<2){
             System.out.println("\nSe necesitan al menos dos jugadores para jugar Battleship");
             System.out.println("Desea crear otro jugador? (SI/NO)");
             String respuesta=ingreso.nextLine().toUpperCase();
@@ -199,15 +199,7 @@ public class ProyectoFinalProgra2 {
             
         }
         System.out.println("Oponente: "+player2.getUsername());
-        juego.iniciarTableros();
-        juego.colocarBarcos(juego.tablero1, juego.barcosJugador1, juego.getUsuarioActual().getUsername(), ingreso);
-        System.out.println("\nCAMBIO DE JUGADOR");
-        System.out.println("Turno de "+player2.getUsername());
-        pausar();
-        juego.colocarBarcos(juego.tablero2, juego.barcosJugador2, player2.getUsername(), ingreso);
-        System.out.println("¡QUE COMIENZE EL JUEGO!");
-        pausar();
-        juego.jugarPartida(player2, ingreso);
+        juego.iniciarPartida(player2, ingreso);
     }
     public static void menuPrincipal(){
         while(true){
@@ -404,8 +396,12 @@ public class ProyectoFinalProgra2 {
                 break;
             }
         }    
-        juego.getUsuarioActual().modificarDatos(nuevoUsername, nuevaPassword);
-        System.out.println("Datos modificados correctamente!");
+        if(juego.modificarDatosUsuarioActual(nuevoUsername, nuevaPassword)){
+            System.out.println("Datos modificados correctamente!");
+        }
+        else{
+            System.out.println("No se pudo modificar (username ya existe)");
+        }
         
     }
     public static boolean eliminarCuenta(){
@@ -413,7 +409,7 @@ public class ProyectoFinalProgra2 {
         System.out.println("Estás seguro de querer eliminar tu cuenta? (si/no): ");
         String respuesta=ingreso.nextLine();
         if(respuesta.equalsIgnoreCase("si")){
-            juego.eleminarCuentaActual();
+            juego.eliminarCuentaActual();
             System.out.println("Cuenta eliminada exitosamente!");
             return true;
         }

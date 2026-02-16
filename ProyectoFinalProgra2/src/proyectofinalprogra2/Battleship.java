@@ -17,10 +17,10 @@ public class Battleship {
     protected Player usuarioActual;
     protected String dificultad;
     protected String modoJuego;
-    public String tablero1[][];
-    public String tablero2[][];
-    public ArrayList<Barco> barcosJugador1;
-    public ArrayList<Barco> barcosJugador2;
+    private String tablero1[][];
+    private String tablero2[][];
+    private ArrayList<Barco> barcosJugador1;
+    private ArrayList<Barco> barcosJugador2;
     
     public Battleship(){
         this.players=new ArrayList<>();
@@ -83,13 +83,31 @@ public class Battleship {
         }
         return null;
     }
-    public boolean eleminarCuentaActual(){
+    public boolean modificarDatosUsuarioActual(String nuevoUsername, String nuevaPassword){
+        if(usuarioActual==null){
+            return false;
+        }
+        if(nuevoUsername.trim().isEmpty() || nuevaPassword.trim().isEmpty()){
+            return false;
+        }
+        for(Player control:players){
+            if(control!=usuarioActual && control.getUsername().equalsIgnoreCase(nuevoUsername)){
+                return false;
+            }
+        }
+        usuarioActual.modificarDatos(nuevoUsername, nuevaPassword);
+        return true;
+    }
+    public boolean eliminarCuentaActual(){
         if(usuarioActual!=null){
             players.remove(usuarioActual);
             usuarioActual=null;
             return true;
         }
         return false;
+    }
+    public int getCantidadPlayers(){
+        return players.size();
     }
     public int getCantidadBarcos(){
         switch(dificultad){
@@ -137,6 +155,19 @@ public class Battleship {
         }
         barcosJugador1.clear();
         barcosJugador2.clear();
+    }
+    public void iniciarPartida(Player player2, Scanner ingreso){
+        iniciarTableros();
+        colocarBarcos(tablero1, barcosJugador1, usuarioActual.getUsername(), ingreso);
+        System.out.println("\nCAMBIO DE JUGADOR");
+        System.out.println("Turno de "+player2.getUsername());
+        System.out.println("\nPresione ENTER para continuar");
+        ingreso.nextLine();
+        colocarBarcos(tablero2, barcosJugador2, player2.getUsername(), ingreso);
+        System.out.println("¡QUE COMIENZE EL JUEGO!");
+        System.out.println("\nPresione ENTER para continuar");
+        ingreso.nextLine();
+        jugarPartida(player2, ingreso);
     }
     public void mostrarTablero(String[][] tablero, boolean ocultarBarcos){
         System.out.println("\n  0 1 2 3 4 5 6 7");
